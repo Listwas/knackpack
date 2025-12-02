@@ -251,22 +251,60 @@ def run_experiment(data_path, selection="roulette", crossover="single", cr=0.9, 
 
 if __name__ == "__main__":
     base = "daneAG/"
+    print("\n" + "="*80)
+    print("ETAP 1/3, Ocena 3.5: Różne wartości mr i cr")
+    print("="*80)
 
-    # Małe zbiory
-    run_experiment(base + "low-dimensional/f1_l-d_kp_10_269",  selection="ranking",    mr=0.01, cr=0.9, pop_size=100, gens=500)
-    run_experiment(base + "low-dimensional/f1_l-d_kp_10_269",  selection="ranking",    mr=0.05, cr=0.9, pop_size=100, gens=500)
-    run_experiment(base + "low-dimensional/f1_l-d_kp_10_269",  selection="ranking",    mr=0.10, cr=0.9, pop_size=100, gens=500)
-    run_experiment(base + "low-dimensional/f1_l-d_kp_10_269",  selection="roulette",   mr=0.05, cr=0.9, pop_size=100, gens=500)
-    run_experiment(base + "low-dimensional/f1_l-d_kp_10_269",  selection="tournament",tournament_size=5, mr=0.05, cr=0.9, pop_size=100, gens=500)
+    for path in [
+        base + "low-dimensional/f1_l-d_kp_10_269",
+        base + "large_scale/knapPI_1_100_1000_1"
+    ]:
+        repair = "large_scale" in path
+        pop = 300 if repair else 100
+        gens = 1000 if repair else 400
 
-    run_experiment(base + "low-dimensional/f10_l-d_kp_20_879", selection="ranking",    mr=0.01, cr=0.9, pop_size=100, gens=600)
-    run_experiment(base + "low-dimensional/f10_l-d_kp_20_879", selection="ranking",    mr=0.05, cr=0.9, pop_size=100, gens=600)
-    run_experiment(base + "low-dimensional/f10_l-d_kp_20_879", selection="ranking",    mr=0.10, cr=0.9, pop_size=100, gens=600)
+        # 4 różne kombinacje 
+        run_experiment(path, selection="ranking",    crossover="single", mr=0.01, cr=0.90, pop_size=pop, gens=gens, use_repair=repair)
+        run_experiment(path, selection="ranking",    crossover="single", mr=0.05, cr=0.90, pop_size=pop, gens=gens, use_repair=repair)
+        run_experiment(path, selection="ranking",    crossover="single", mr=0.10, cr=0.90, pop_size=pop, gens=gens, use_repair=repair)
+        run_experiment(path, selection="ranking",    crossover="single", mr=0.05, cr=0.60, pop_size=pop, gens=gens, use_repair=repair)
 
-    # Duże zbiory 
-    run_experiment(base + "large_scale/knapPI_1_100_1000_1", selection="ranking",    mr=0.05, cr=0.9, pop_size=300, gens=1000, use_repair=True)
-    run_experiment(base + "large_scale/knapPI_1_100_1000_1", selection="roulette",   mr=0.05, cr=0.9, pop_size=300, gens=1000, use_repair=True)
-    run_experiment(base + "large_scale/knapPI_1_100_1000_1", selection="tournament",tournament_size=5, mr=0.05, cr=0.9, pop_size=300, gens=1000, use_repair=True)
+    print("\n" + "="*80)
+    print("ETAP 2/3, Ocena 4.5: Selekcja ranking vs ruletkowa + single vs double")
+    print("="*80)
 
-    run_experiment(base + "large_scale/knapPI_2_100_1000_1", selection="ranking",    mr=0.05, cr=0.9, pop_size=300, gens=1000, use_repair=True)
-    run_experiment(base + "large_scale/knapPI_2_100_1000_1", selection="tournament",tournament_size=5, mr=0.05, cr=0.9, pop_size=300, gens=1000, use_repair=True)
+    for path in [
+        base + "low-dimensional/f2_l-d_kp_20_878",
+        base + "large_scale/knapPI_2_100_1000_1"
+    ]:
+        repair = "large_scale" in path
+        pop = 300 if repair else 120
+        gens = 1000 if repair else 500
+
+        # 1. Porównanie selekcji (ranking vs roulette)
+        run_experiment(path, selection="ranking",    crossover="single", mr=0.05, cr=0.9, pop_size=pop, gens=gens, use_repair=repair)
+        run_experiment(path, selection="roulette",   crossover="single", mr=0.05, cr=0.9, pop_size=pop, gens=gens, use_repair=repair)
+
+        # 2. Porównanie krzyżowania (single vs double)
+        run_experiment(path, selection="ranking",    crossover="single", mr=0.05, cr=0.9, pop_size=pop, gens=gens, use_repair=repair)
+        run_experiment(path, selection="ranking",    crossover="double", mr=0.05, cr=0.9, pop_size=pop, gens=gens, use_repair=repair)
+
+    print("\n" + "="*80)
+    print("ETAP 3/3, Ocena 5.0: Porównanie ranking, roulette i tournament")
+    print("="*80)
+
+    for path in [
+        base + "low-dimensional/f6_l-d_kp_10_60",
+        base + "low-dimensional/f10_l-d_kp_20_879",
+        base + "large_scale/knapPI_1_100_1000_1",
+        base + "large_scale/knapPI_2_100_1000_1"
+    ]:
+        repair = "large_scale" in path
+        pop = 300 if repair else 100
+        gens = 1000 if repair else 400
+
+        run_experiment(path, selection="roulette",    crossover="single", mr=0.05, cr=0.9, pop_size=pop, gens=gens, tournament_size=5, use_repair=repair)
+        run_experiment(path, selection="ranking",     crossover="single", mr=0.05, cr=0.9, pop_size=pop, gens=gens, tournament_size=5, use_repair=repair)
+        run_experiment(path, selection="tournament",  crossover="single", mr=0.05, cr=0.9, pop_size=pop, gens=gens, tournament_size=5, use_repair=repair)
+
+    print("\n" + "="*80)
