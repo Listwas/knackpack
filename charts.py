@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import glob
 
+
 class Charts:
     def __init__(self, data_dir='tests', output_dir='charts'):
         self.data_dir = data_dir
@@ -62,7 +63,9 @@ class Charts:
 
         datasets = {
             'f1_l-d_kp_10_269': 295,
-            'f10_l-d_kp_20_879': 1025
+            'f10_l-d_kp_20_879': 1025,
+            'f2_l-d_kp_20_878': 1024,
+            'f6_l-d_kp_10_60': 52
         }
 
         for dataset, optimum in datasets.items():
